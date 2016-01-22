@@ -37,7 +37,8 @@ int main(int argc, char *argv[]) {
     myfile.close();
 
 	// Now traverse the graph.
-	graph.breadthFirst( graph.nodeArray()[0], visit );
+	//graph.breadthFirst( graph.nodeArray()[0], visit );
+	graph.breadthFirstSearch(graph.nodeArray()[23], graph.nodeArray()[15], visit);
 
 	system("PAUSE");
 	

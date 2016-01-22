@@ -58,7 +58,7 @@ public:
     void clearMarks();
     void depthFirst( Node* pNode, void (*pProcess)(Node*) );
     void breadthFirst( Node* pNode, void (*pProcess)(Node*) );
-
+	void breadthFirstSearch(Node* pStart, Node* pGoal, void (*pProcess)(Node*));
 };
 
 // ----------------------------------------------------------------
@@ -319,6 +319,46 @@ void Graph<NodeType, ArcType>::breadthFirst( Node* pNode, void (*pProcess)(Node*
          nodeQueue.pop();
       }
    }  
+}
+
+template<class NodeType, class ArcType>
+void Graph<NodeType, ArcType>::breadthFirstSearch(Node* pStart, Node* pGoal, void(*pProcess)(Node*)) {
+	if (pStart != 0) {
+		queue<Node*> nodeQueue;
+		// place the first node on the queue, and mark it.
+		nodeQueue.push(pStart);
+		pStart->setMarked(true);
+
+		bool goalReached = false;
+		// loop through the queue while there are nodes in it.
+		while (nodeQueue.size() != 0 && !goalReached) {
+			// process the node at the front of the queue.
+			//pProcess(nodeQueue.front());
+
+			// add all of the child nodes that have not been 
+			// marked into the queue
+			list<Arc>::const_iterator iter = nodeQueue.front()->arcList().begin();
+			list<Arc>::const_iterator endIter = nodeQueue.front()->arcList().end();
+
+			for (; iter != endIter && !goalReached; iter++) {
+				if ((*iter).node() == pGoal) {
+					goalReached = true;
+					pGoal->setPrevious(nodeQueue.front());
+					pProcess(pGoal);
+					pGoal->printPrevious(pProcess);
+				}
+				if ((*iter).node()->marked() == false) {
+					// mark the node and add it to the queue.
+					(*iter).node()->setPrevious(nodeQueue.front());
+					(*iter).node()->setMarked(true);
+					nodeQueue.push((*iter).node());
+				}
+			}
+
+			// dequeue the current node.
+			nodeQueue.pop();
+		}
+	}
 }
 
 #include "GraphNode.h"

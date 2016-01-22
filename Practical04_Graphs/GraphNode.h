@@ -33,6 +33,11 @@ private:
 // -------------------------------------------------------
     bool m_marked;
 
+// -------------------------------------------------------
+// Description: The previous node for a search
+// -------------------------------------------------------
+	Node* m_prevNode;
+
 public:
     // Accessor functions
     list<Arc> const & arcList() const {
@@ -54,10 +59,19 @@ public:
     void setMarked(bool mark) {
         m_marked = mark;
     }
-           
+
+	void setPrevious(Node* prev) {
+		m_prevNode = prev;
+	}
+
+	Node* getPrevious(){
+		return m_prevNode;
+	}
+
     Arc* getArc( Node* pNode );    
     void addArc( Node* pNode, ArcType pWeight );
     void removeArc( Node* pNode );
+	void printPrevious(void(*pProcess)(Node*));
 
 
 };
@@ -129,6 +143,14 @@ void GraphNode<NodeType, ArcType>::removeArc( Node* pNode ) {
              m_arcList.remove( (*iter) );
           }                           
      }
+}
+
+template<typename NodeType, typename ArcType>
+void GraphNode<NodeType, ArcType>::printPrevious(void(*pProcess)(Node*)) {
+	if (m_prevNode != nullptr) {
+		pProcess(m_prevNode);
+		m_prevNode->printPrevious(pProcess);
+	}
 }
 
 #include "GraphArc.h"
